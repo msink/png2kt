@@ -1,0 +1,3 @@
+headers = png.h
+compilerOpts.linux = -I/usr/include/libpng
+compilerOpts.osx = -I/opt/local/include/libpng /usr/local/include/libpng
