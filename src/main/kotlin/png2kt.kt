@@ -47,7 +47,9 @@ fun convert_file(name: String) = memScoped {
     val outfile = fopen("$name.kt", "wt") ?:
         throw Error("File '$name.kt' could not be opened for writing")
 
-    fprintf(outfile, "import kotlinx.cinterop.*\n\nval `$name` = cValuesOf(")
+    fprintf(outfile, "import kotlinx.cinterop.*\n")
+    fprintf(outfile, "import libui.*\n")
+    fprintf(outfile, "\nval `$name` = ImageData($width, $height, $stride, cValuesOf(")
     for (i in 0 until (height * width)) {
         if (i.rem(4) == 0) fprintf(outfile, "\n   ")
         val r = buffer[i * 4 + 0].toInt() and 0xff
@@ -57,7 +59,7 @@ fun convert_file(name: String) = memScoped {
         fprintf(outfile, " 0x%02X%02X%02X%02X.toInt()", a, r, g, b)
         if (i < (height * width) - 1) fprintf(outfile, ",")
     }
-    fprintf(outfile, "\n)\n")
+    fprintf(outfile, "\n))\n")
 
     fclose(outfile)
     println(" done")
