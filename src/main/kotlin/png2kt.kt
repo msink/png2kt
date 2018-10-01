@@ -47,16 +47,16 @@ fun convert_file(name: String) = memScoped {
     val outfile = fopen("$name.kt", "wt") ?:
         throw Error("File '$name.kt' could not be opened for writing")
 
-    fprintf(outfile, "import kotlinx.cinterop.*\n")
-    fprintf(outfile, "import libui.*\n")
-    fprintf(outfile, "\nval `$name` = ImageData($width, $height, $stride, cValuesOf(")
+    fprintf(outfile, "import kotlinx.cinterop.cValuesOf\n")
+    fprintf(outfile, "import libui.ktx.draw.ImageData\n\n")
+    fprintf(outfile, "val `$name` = ImageData(width=$width, height=$height, stride=$stride, pixels=cValuesOf(")
     for (i in 0 until (height * width)) {
-        if (i.rem(4) == 0) fprintf(outfile, "\n   ")
+        if (i.rem(8) == 0) fprintf(outfile, "\n    ")
         val r = buffer[i * 4 + 0].toInt() and 0xff
         val g = buffer[i * 4 + 1].toInt() and 0xff
         val b = buffer[i * 4 + 2].toInt() and 0xff
         val a = buffer[i * 4 + 3].toInt() and 0xff
-        fprintf(outfile, " 0x%02X%02X%02X%02X.toInt()", a, r, g, b)
+        fprintf(outfile, "0x%02X%02X%02X%02Xu", a, r, g, b)
         if (i < (height * width) - 1) fprintf(outfile, ",")
     }
     fprintf(outfile, "\n))\n")
