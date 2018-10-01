@@ -56,7 +56,7 @@ fun convert_file(name: String) = memScoped {
         val g = buffer[i * 4 + 1].toInt() and 0xff
         val b = buffer[i * 4 + 2].toInt() and 0xff
         val a = buffer[i * 4 + 3].toInt() and 0xff
-        fprintf(outfile, "0x%02X%02X%02X%02Xu", a, r, g, b)
+        fprintf(outfile, "0x%02X%02X%02X%02Xu", a, b, g, r)
         if (i < (height * width) - 1) fprintf(outfile, ",")
     }
     fprintf(outfile, "\n))\n")
