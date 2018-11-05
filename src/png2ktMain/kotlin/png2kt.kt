@@ -5,7 +5,7 @@ import libpng.*
 fun convert_file(name: String) = memScoped {
     print("Reading '$name' ...")
 
-    val header = allocArray<ByteVar>(8)
+    val header = allocArray<UByteVar>(8)
     val infile = fopen(name, "rb") ?:
         throw Error("File '$name' could not be opened for reading")
     fread(header, 1, 8, infile)
@@ -23,15 +23,15 @@ fun convert_file(name: String) = memScoped {
     png_set_sig_bytes(png_ptr, 8)
     png_read_info(png_ptr, info_ptr)
 
-    val width:  Int = png_get_image_width(png_ptr, info_ptr)
-    val height: Int = png_get_image_height(png_ptr, info_ptr)
-    val stride: Int = png_get_rowbytes(png_ptr, info_ptr).narrow()
+    val width:  Int = png_get_image_width(png_ptr, info_ptr).toInt()
+    val height: Int = png_get_image_height(png_ptr, info_ptr).toInt()
+    val stride: Int = png_get_rowbytes(png_ptr, info_ptr).toInt()
 
     png_set_interlace_handling(png_ptr)
     png_read_update_info(png_ptr, info_ptr)
 
     val buffer = allocArray<ByteVar>(height * stride)
-    val row_pointers = Array<CPointer<ByteVar>?>(height) {
+    val row_pointers = Array<CPointer<UByteVar>?>(height) {
         (buffer.toLong() + (it * stride)).toCPointer()
     }
     png_read_image(png_ptr, row_pointers.toCValues().ptr)
